@@ -1,0 +1,83 @@
+<!--ghi de content-wrapper-->
+<style>
+    .content-wrapper {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+</style>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% extends "layout/base.html" %}
+
+{% block title %}Order{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<div class="container-fluid">
+    <div class="row h-100">
+
+        <!-- SIDEBAR LEFT -->
+        <div class="col-12 col-lg-2 p-0 sidebar-custom h-100">
+            <nav class="p-3 text-white bg-dark h-100">
+                <h5>Mục lục</h5>
+                <a href="/order/{{ table.id }}" class="d-block text-white mt-2 text-decoration-none">Tất cả</a>
+                {% for c in categories %}
+                <a href="/order/{{ table.id }}?category_id={{ c.id }}"
+                   class="d-block text-white mt-2 text-decoration-none">{{ c.name }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-12 col-lg-10">
+            <div class="d-flex align-items-center">
+                <form class="d-flex w-50 ps-2 pt-3 me-auto" method="get" action="/order/{{ table.id }}">
+                    <input class="form-control me-2" type="text" placeholder="Tìm kiếm món ăn..." name="keyword">
+                    <button class="btn btn-primary" type="submit">Tìm</button>
+                </form>
+
+                <a class="text-decoration-none pe-2 fs-3" href="/cart/{{ table.id }}">🛒<span class="badge bg-danger cart-counter">{{ cart_stats.total_quantity }}</span></a>
+            </div>
+            {% if pages > 1 %}
+            <ul class="pagination ps-2 mb-0">
+                {% for i in range(1, pages + 1) %}
+                <li class="page-item {% if i == page %}active{% endif %}">
+                    <a class="page-link" href="/order/{{ table.id }}?page={{i}}
+                                                                {%- if request.args.get('category_id') -%}
+                                                                    &category_id={{ request.args.get('category_id') }}
+                                                                {%- endif -%}
+                                                                {%- if request.args.get('kw') -%}
+                                                                    &kw={{ request.args.get('kw') }}
+                                                                {%- endif -%}">
+                        {{i}}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <section class="p-3">
+                <div class="row">
+                    {% for f in foods %}
+                    <div class="col-6 col-md-4 col-lg-3 p-2">
+                        <div class="card h-100">
+                            <img src="{{ f.image }}" class="card-img-top">
+                            <div class="card-body text-center">
+                                <h5>{{ f.name }}</h5>
+                                <p>{{ "{:,.0f}".format(f.price) }} đ</p>
+                                <button class="btn btn-danger w-10" onclick="addToCart({{ table.id }}, {{ f.id }}, '{{ f.name }}', {{ f.price }})">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="mt-3 ms-3">
+  Vui lòng <a href="/login?next=/order/{{ table.id }}" class="text-decoration-none">đăng nhập</a> để order!
+</div>
+{% endif %}
+{% endblock %}

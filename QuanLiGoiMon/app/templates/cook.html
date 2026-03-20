@@ -1,0 +1,136 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Nhà Bếp{% endblock %}
+
+{% block content %}
+<style>
+    .content-wrapper {
+        display: flex !important;
+        flex-direction: row !important;
+        min-height: 100% !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .sidebar-custom {
+        flex: 0 0 16.666667%;
+        max-width: 16.666667%;
+        height: 100%;
+    }
+
+    .sidebar-custom nav {
+        height: 100%;
+    }
+
+    #orders-container {
+        flex: 1;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    /* Cố định độ rộng cột trong bảng đơn hàng */
+    #orders-container table th:nth-child(1),
+    #orders-container table td:nth-child(1) {
+        width: 5%;
+        /* Cột STT */
+    }
+
+    #orders-container table th:nth-child(2),
+    #orders-container table td:nth-child(2) {
+        width: 20%;
+        /* Cột Món */
+    }
+
+    #orders-container table th:nth-child(3),
+    #orders-container table td:nth-child(3) {
+        width: 10%;
+        /* Cột Số lượng */
+    }
+
+    #orders-container table th:nth-child(4),
+    #orders-container table td:nth-child(4) {
+        width: 35%;
+        /* Cột Ghi chú */
+    }
+
+    /* Căn lề trái cho tất cả các ô trong bảng */
+    #orders-container table th,
+    #orders-container table td {
+        text-align: left !important;
+        padding: 12px 15px;
+    }
+
+    /* Tên table in đậm hơn */
+    #orders-container table thead tr:first-child th {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row h-100">
+
+        <!-- SIDEBAR LEFT -->
+        <div class="col-12 col-lg-2 p-0 sidebar-custom">
+            <nav class="p-3 text-white bg-dark h-100">
+                <h5>Bộ lọc</h5>
+                <a href="/cook?status=pending" class="d-block text-white mt-2 text-decoration-none">Đơn chờ tiếp
+                    nhận</a>
+                <a href="/cook?status=cooking" class="d-block text-white mt-2 text-decoration-none">Đơn đang xử lý</a>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div id="orders-container" class="col-12 col-lg-10 p-4">
+
+            {% if not orders %}
+            <p class="text-muted text-center">Chưa có đơn</p>
+            {% else %}
+
+            {% for order in orders %}
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th colspan="4" class="bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>{{ order.table_name }}</span>
+                                <button class="btn btn-sm btn-{{ 'primary' if status == 'pending' else 'success' }}"
+                                    onclick="{% if status == 'pending' %}tiepNhanAction({{ order.order_id }})
+                                    {% else %}hoanThanhAction({{ order.order_id }}, '{{ order.table_name }}', {{ order.user_id }}){% endif %}">
+                                    {{ 'Tiếp nhận' if status == 'pending' else 'Hoàn thành' }}
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>STT</th>
+                        <th>Món</th>
+                        <th>Số lượng</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.food_orders %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.food_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.note }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+<script>
+    status = "{{ status }}";
+</script>
+<script src="{{ url_for('static', filename='js/cook.js') }}"></script>
+{% endblock %}

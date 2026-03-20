@@ -1,0 +1,99 @@
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% extends "layout/base.html" %}
+
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center mb-3 mt-3">
+    <a href="/order/{{ table_id }}"
+       class="btn btn-outline-secondary me-3">
+        <i class="bi bi-arrow-left fs-4"></i>
+    </a>
+    <h1 class="m-0 flex-grow-1 text-center">GIỎ HÀNG</h1>
+</div>
+{% if current_user.is_authenticated %}
+{% if cart %}
+<table class="table">
+    <tr>
+        <th>STT</th>
+        <th>Bàn số</th>
+        <th>Tên sản phẩm</th>
+        <th class="w-15">Số lượng</th>
+        <th>Ghi chú</th>
+        <th></th>
+    </tr>
+    {% for c in cart.values() %}
+    <tr id="cart{{ c.id }}">
+        <td>{{ loop.index }}</td>
+        <td>{{ table_id }}</td>
+        <td>{{ c.name }}</td>
+        <td>
+            <input type="number" value="{{ c.quantity }}" class="form-control" min="1"
+                   onblur="updateCart({{ table_id }}, {{ c.id }}, this)"/>
+        </td>
+        <td>
+            <input
+                    type="text"
+                    class="form-control"
+                    value="{{ c.note or '' }}"
+                    onblur="updateNote({{ table_id }}, {{ c.id }}, this.value)"
+                    placeholder="Ghi chú"
+            >
+        </td>
+        <td>
+            <button class="btn btn-danger" onclick="deleteCart({{ table_id }},{{ c.id }})">&times;</button>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="alert alert-info">
+    <h3>Tổng tiền: <span class="cart-amount">{{ "{:,.0f}".format(cart_stats.total_amount) }}</span> VNĐ</h3>
+    <h3>Tổng số lượng: <span class="cart-counter">{{ cart_stats.total_quantity }}</span></h3>
+</div>
+
+<div class="d-flex">
+    <div class="mt-1 mb-1 me-3">
+        <button class="btn btn-success" onclick="orderFood({{ table_id }})">Gọi món</button>
+    </div>
+    <div class="mt-1 mb-1">
+        <button class="btn btn-danger" onclick="cancelOrderFood({{ table_id }})">Hủy gọi món</button>
+    </div>
+</div>
+
+{% else %}
+<div class="alert alert-warning mt-2">
+    Không có sản phẩm trong giỏ!
+</div>
+{% endif %}
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalTitle">
+                    <i class="bi bi-exclamation-triangle-fill me-2" id="confirmModalIcon"></i>
+                    <span id="confirmModalTitleText">Xác nhận</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" id="confirmModalBody">
+                Nội dung
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button class="btn" id="confirmDeleteBtn">Xác nhận</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="mt-1 mb-1">
+  Vui lòng <a href="/login?next=/cart/{{ table_id }}" class="text-decoration-none">đăng nhập</a> để gọi món!
+</div>
+{% endif %}
+{% endblock %}

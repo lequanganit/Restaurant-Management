@@ -1,0 +1,11 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Lỗi{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1 class="text-danger">403 - Forbidden</h1>
+    <p>Không có quyền truy cập trang!</p>
+    <a href="/{{ user_role.name|lower }}" class="btn btn-primary">Quay về</a>
+</div>
+{% endblock %}

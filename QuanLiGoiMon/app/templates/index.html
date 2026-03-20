@@ -1,0 +1,85 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Nhà hàng HHA{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="bg-dark text-white py-5"
+         style="background: linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.6)),
+          url('https://res.cloudinary.com/durpn2bki/image/upload/v1765979818/nha-hang-dep-sai-gon-4_okzbhq.jpg') center/cover;">
+    <div class="container text-center">
+        <h1 class="fw-bold display-5">Nhà hàng HHA</h1>
+        <p class="lead mt-3">Tinh hoa ẩm thực – Trải nghiệm đẳng cấp</p>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="container my-5">
+    <div class="row align-items-center g-5">
+        <div class="col-md-6" >
+            <img src="https://res.cloudinary.com/durpn2bki/image/upload/v1765979516/unnamed_zaxt5x.png"
+                 class="img-fluid rounded shadow"
+                 alt="Không gian nhà hàng">
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-3">Về chúng tôi</h2>
+            <p>Nhà hàng HHA được thành lập với sứ mệnh mang đến cho khách hàng những trải nghiệm ẩm thực chất lượng cao, kết hợp giữa hương vị truyền thống và phong cách phục vụ hiện đại.</p>
+            <p>Chúng tôi không ngừng cải tiến chất lượng món ăn, dịch vụ và không gian nhằm đáp ứng những tiêu chuẩn khắt khe nhất của khách hàng.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CORE VALUES -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-4">Giá trị cốt lõi</h2>
+        <div class="row g-4 text-center">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="mb-3"> Chất lượng</h4>
+                        <p>Nguyên liệu được tuyển chọn kỹ lưỡng, đảm bảo an toàn vệ sinh thực phẩm và hương vị tốt nhất.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="mb-3">Chuyên nghiệp</h4>
+                        <p>Đội ngũ đầu bếp và nhân viên phục vụ giàu kinh nghiệm, tận tâm và chu đáo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h4 class="mb-3"> Trải nghiệm</h4>
+                        <p>Không gian sang trọng, ấm cúng, phù hợp cho gia đình, bạn bè và đối tác.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- INFO -->
+<section class="container my-5">
+    <div class="card shadow border-0">
+        <div class="card-body">
+            <h3 class="fw-bold mb-3">Thông tin liên hệ</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ</p>
+                    <p><strong>Điện thoại:</strong> 0123 456 789</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Giờ mở cửa:</strong> 09:00 – 22:00</p>
+                    <p><strong>Email:</strong> contact@nhahanghha.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

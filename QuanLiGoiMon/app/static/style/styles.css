@@ -1,0 +1,26 @@
+/* bố cục web theo chiều dọc */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* content chiếm vùng giữa header và footer */
+.content-wrapper {
+    flex: 1;
+}
+/* cho width chiem 40% chieu rong man hinh */
+.w-50 {
+        width: 50%;
+}
+
+.w-15 {
+        width: 15%;
+}
+/* bố cục các food có kích thước đồng đều*/
+.card-img-top {
+    height: 180px;
+    object-fit: contain;
+    background: #f8f9fa;
+}

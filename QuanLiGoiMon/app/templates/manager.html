@@ -1,0 +1,175 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Quản lý{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center text-success mt-3">THỐNG KÊ & BÁO CÁO DOANH THU</h1>
+<div class="container mt-4">
+
+    <!-- Form loc -->
+    <form method="get" action="/manager">
+        <div class="card p-3">
+            <div class="row g-3 align-items-end">
+                <!-- loai bao cao -->
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Loại báo cáo</label>
+                    <select class="form-select" id="reportType" name="type" onchange="toggleFilter()">
+                        <option value="day" {{'selected' if request.args.get('type','day') == 'day' }}>
+                            Theo ngày
+                        </option>
+                        <option value="month" {{'selected' if request.args.get('type','day') == 'month' }}>
+                            Theo tháng
+                        </option>
+                    </select>
+                </div>
+
+                <!-- theo ngay -->
+                <div class="col-md-3" id="fromDateBox">
+                    <label class="form-label">Từ ngày</label>
+                    <input type="date" name="from_date" class="form-control"
+                           value="{{ request.args.get('from_date','') }}">
+                </div>
+
+                <div class="col-md-3" id="toDateBox">
+                    <label class="form-label">Đến ngày</label>
+                    <input type="date" name="to_date" class="form-control" value="{{ request.args.get('to_date','') }}">
+                </div>
+
+                <!-- theo thang -->
+                <div class="col-md-3 d-none" id="yearBox">
+                    <label class="form-label">Chọn năm</label>
+                    <select class="form-select" name="year">
+                        {% for y in [2023, 2024, 2025] %}
+                        <option value="{{ y }}" {{
+                        'selected' if request.args.get('year') == y|string else '' }}> {{ y }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="col-md-3">
+                    <button class="btn btn-success w-100"  type="submit">
+                        Xem báo cáo
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <!-- DOANH THU -->
+    <div class="text-center">
+        <div class="card p-4 ">
+            <h5 class="text-center">
+                {% if request.args.get('type','day') == 'month' %}
+                Doanh thu theo tháng
+                {% else %}
+                Doanh thu theo ngày
+                {% endif %}
+            </h5>
+            <table class="table table-bordered text-center mt-3">
+                <tr>
+                    <th>Thời gian</th>
+                    <th>Doanh thu</th>
+                </tr>
+
+                {% if revenues %}
+                {% for r in revenues %}
+                <tr>
+                    <td>
+                        {% if request.args.get('type') == 'month' %}
+                        Tháng {{ r[0] }}
+                        {% else %}
+                        {{ r[0].strftime("%d/%m/%Y") }}
+                        {% endif %}
+                    </td>
+                    <td>{{ "{:,.0f}".format(r[1]) }} ₫</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="2" class="text-muted">Không có dữ liệu</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <!-- top mon -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h5 class="text-center"> Top món bán chạy</h5>
+                <table class="table table-bordered text-center mt-3">
+                    <tr>
+                        <th>Tên món</th>
+                        <th>Số lượng</th>
+                    </tr>
+                    {% if top_foods %}
+                    {% for f in top_foods %}
+                    <tr>
+                        <td>{{ f[0] }}</td>
+                        <td>{{ f[1] }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="2" class="text-muted">Không có dữ liệu</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <!-- bieu do ti le mon -->
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h5 class="text-center">Biểu đồ thể hiện tỉ lệ món</h5>
+                <canvas id="foodChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function toggleFilter() {
+        const type = document.getElementById("reportType").value;
+        document.getElementById("fromDateBox").classList.toggle("d-none", type !== "day");
+        document.getElementById("toDateBox").classList.toggle("d-none", type !== "day");
+        document.getElementById("yearBox").classList.toggle("d-none", type !== "month");
+    }
+    function drawFoodChart() {
+        let labels = [];
+        let data = [];
+
+        {% for f in food_ratios %}
+            labels.push('{{ f[0] }}');
+            data.push({{ f[1] }});
+        {% endfor %}
+        const ctx = document.getElementById('foodChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['red', 'green', 'blue', 'gold', 'brown', 'pink']
+                    }]
+                }
+            });
+        }
+
+    }
+
+    window.onload = function () {
+        toggleFilter();
+        drawFoodChart();
+    };
+</script>
+{% endblock %}
+
